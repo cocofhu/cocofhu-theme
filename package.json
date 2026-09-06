@@ -1,7 +1,7 @@
 {
   "name": "hexo-theme-cocofhu",
   "version": "0.1.0",
-  "description": "cocofhu personal Hexo theme: signature intro, project cases, posts from the blog.",
+  "description": "cocofhu personal Hexo theme: configurable work/recent notes, writing from posts, homepage-matched articles.",
   "keywords": ["hexo", "theme", "cocofhu"],
   "license": "MIT",
   "repository": {

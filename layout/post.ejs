@@ -1,12 +1,37 @@
-<header class="article-bar">
-  <a href="<%= url_for('/') %>">← 返回</a>
-</header>
-<article class="article">
-  <p class="article-meta">
-    <time datetime="<%= date(page.date, 'YYYY-MM-DD') %>"><%= date(page.date, 'YYYY · MM · DD') %></time>
-  </p>
-  <h1><%= page.title %></h1>
-  <div class="article-body">
-    <%- page.content %>
+<div class="art">
+  <div class="art-amb" aria-hidden="true">
+    <i class="art-dust"></i><i class="art-dust"></i><i class="art-dust"></i>
+    <i class="art-dust"></i><i class="art-dust"></i><i class="art-dust"></i>
+    <i class="art-dust"></i><i class="art-dust"></i>
   </div>
-</article>
+  <header class="art-bar">
+    <a class="art-brand" href="<%= url_for('/') %>" aria-label="回首页">
+      <%- partial('_partial/cocofhu-sig') %>
+    </a>
+    <p class="art-kicker">WRITING</p>
+    <% var tocHtml = toc(page.content, { list_number: false, max_depth: 3 }); %>
+    <% if (tocHtml) { %>
+    <button type="button" class="art-toc-toggle" id="artTocToggle" aria-expanded="false" aria-controls="artToc">目录</button>
+    <% } %>
+  </header>
+  <div class="art-shell">
+    <main class="art-main">
+      <article class="art-paper">
+        <p class="art-kicker">NOTE</p>
+        <h1 class="art-title"><%= page.title %></h1>
+        <p class="art-meta">
+          <time datetime="<%= date(page.date, 'YYYY-MM-DD') %>"><%= date(page.date, 'YYYY · MM') %></time>
+          <% if (page.categories && page.categories.length) { %>
+          <span class="art-cat">
+            <% page.categories.each(function(cat, i) { %><%= i ? ' · ' : '' %><%= String(cat.name).toUpperCase() %><% }) %>
+          </span>
+          <% } %>
+        </p>
+        <div class="art-body">
+          <%- page.content %>
+        </div>
+      </article>
+    </main>
+    <%- partial('_partial/article-toc') %>
+  </div>
+</div>

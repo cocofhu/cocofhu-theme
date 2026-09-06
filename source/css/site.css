@@ -1905,12 +1905,8 @@
 
     .case p a {
       color: #fff;
-      text-decoration: underline;
-      text-decoration-color: rgba(126, 175, 255, 0.45);
-      text-underline-offset: 0.18em;
+      text-decoration: none;
     }
-
-    .case p a:hover { text-decoration-color: var(--accent); }
 
     .case-go {
       display: inline-flex;
@@ -1919,6 +1915,7 @@
       font-size: 0.78rem;
       font-weight: 500;
       color: #fff;
+      text-decoration: none;
     }
 
     .case-go .icon { width: 0.78rem; height: 0.78rem; }
@@ -2254,7 +2251,8 @@
       }
     }
 
-    .case-copy .harness-mark {
+    .case-copy .harness-mark,
+    .recent .harness-mark {
       position: relative;
       display: inline-block;
       margin: 0 0.05em;
@@ -2275,7 +2273,10 @@
 
     .case-copy .harness-mark:hover,
     .case-copy .harness-mark:focus-visible,
-    .case-copy .harness-mark.is-on {
+    .case-copy .harness-mark.is-on,
+    .recent .harness-mark:hover,
+    .recent .harness-mark:focus-visible,
+    .recent .harness-mark.is-on {
       background: rgba(126, 175, 255, 0.32);
       box-shadow: 0 0 0 1px rgba(126, 175, 255, 0.35);
       outline: none;
@@ -2336,7 +2337,10 @@
 
     .case-copy .harness-mark:hover .harness-bubble,
     .case-copy .harness-mark:focus-visible .harness-bubble,
-    .case-copy .harness-mark.is-on .harness-bubble {
+    .case-copy .harness-mark.is-on .harness-bubble,
+    .recent .harness-mark:hover .harness-bubble,
+    .recent .harness-mark:focus-visible .harness-bubble,
+    .recent .harness-mark.is-on .harness-bubble {
       opacity: 1;
       transform: translateX(-50%) translateY(0) scale(1);
     }
@@ -2350,90 +2354,6 @@
       letter-spacing: 0.01em;
       line-height: 1.35;
       color: rgba(255, 255, 255, 0.9);
-    }
-
-    .harness-bubble--media {
-      width: min(22rem, 78vw);
-      max-width: min(22rem, 78vw);
-      padding: 0.4rem 0.4rem 0.45rem;
-      gap: 0.4rem;
-    }
-
-    .harness-bubble--media img {
-      display: block;
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      object-fit: cover;
-      object-position: left top;
-      border-radius: 7px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: #080809;
-    }
-
-    .harness-lightbox {
-      position: fixed;
-      inset: 0;
-      z-index: 80;
-      display: grid;
-      place-items: center;
-      padding: 1.25rem;
-      background: rgba(0, 0, 0, 0.72);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.22s ease;
-    }
-
-    .harness-lightbox.is-open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .harness-lightbox-card {
-      position: relative;
-      width: min(960px, 100%);
-      max-height: min(86vh, 720px);
-      display: flex;
-      flex-direction: column;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: #0c0c0e;
-      box-shadow: 0 28px 80px -24px rgba(0, 0, 0, 0.9);
-      overflow: hidden;
-    }
-
-    .harness-lightbox-card header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 0.85rem 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-      font-family: var(--sans);
-      font-size: 0.88rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .harness-lightbox-card header button {
-      border: 0;
-      background: rgba(255, 255, 255, 0.06);
-      color: rgba(255, 255, 255, 0.75);
-      border-radius: 8px;
-      padding: 0.3rem 0.55rem;
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-    }
-
-    .harness-lightbox-card img {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: calc(86vh - 3.2rem);
-      object-fit: contain;
-      background: #050506;
     }
 
     .viz-pipe {
@@ -3305,7 +3225,7 @@
       box-shadow: 0 0 12px rgba(103, 153, 254, 0.55);
     }
 
-    .recent a {
+    .recent-row {
       display: grid;
       grid-template-columns: 6.5rem minmax(0, 1fr) auto;
       gap: 1.2rem;
@@ -3331,7 +3251,13 @@
       transition: color 0.2s ease;
     }
 
-    .recent a:hover h3 { color: #fff; }
+    .recent h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .recent li:hover h3,
+    .recent h3 a:hover { color: #fff; }
 
     .recent p {
       margin-top: 0.35rem;

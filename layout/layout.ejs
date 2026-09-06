@@ -12,18 +12,23 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=IBM+Plex+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+  <% if (is_home()) { %>
   <link rel="stylesheet" href="<%= url_for('css/site.css') %>" />
+  <% } else { %>
+  <link rel="stylesheet" href="<%= url_for('css/article.css') %>" />
+  <% } %>
 </head>
 <body<% if (!is_home()) { %> class="is-article"<% } %>>
   <%- body %>
   <% if (is_home()) { %>
   <script>
     window.COCOFHU = {
-      starIntro: <%- JSON.stringify(url_for('assets/star-handoff.mp4') + '?v=bake2') %>,
-      harnessDemo: <%- JSON.stringify(url_for('assets/harness-demo.webp')) %>
+      starIntro: <%- JSON.stringify(url_for('assets/star-handoff.mp4') + '?v=bake2') %>
     };
   </script>
   <script src="<%= url_for('js/site.js') %>"></script>
+  <% } else { %>
+  <script src="<%= url_for('js/article.js') %>"></script>
   <% } %>
 </body>
 </html>

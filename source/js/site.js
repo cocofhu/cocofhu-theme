@@ -1006,68 +1006,20 @@
       arts.forEach((el) => io.observe(el));
     })();
 
-    /* AI Harness: bubble tips on Demo / 流程图 / Approving; Demo click opens window */
+    /* AI Harness: keep one text bubble visible while hovering a mark */
     (() => {
       const shell = document.querySelector(".case-shell--harness");
-      const lightbox = document.getElementById("harnessLightbox");
-      const lbTitle = document.getElementById("harnessLightboxTitle");
-      const lbImg = document.getElementById("harnessLightboxImg");
-      const lbClose = document.getElementById("harnessLightboxClose");
       if (!shell) return;
-
       const marks = [...shell.querySelectorAll(".harness-mark")];
-      const NEED_TIPS = ["我不喜欢，重写设计下", "对对对就是这样，太对了"];
-
-      function openLightbox(src, title) {
-        if (!lightbox || !lbImg) return;
-        lbImg.src = src;
-        if (lbTitle) lbTitle.textContent = title;
-        lightbox.hidden = false;
-        requestAnimationFrame(() => lightbox.classList.add("is-open"));
-      }
-
-      function closeLightbox() {
-        if (!lightbox) return;
-        lightbox.classList.remove("is-open");
-        const done = () => { lightbox.hidden = true; };
-        lightbox.addEventListener("transitionend", done, { once: true });
-        setTimeout(done, 280);
-      }
-
       marks.forEach((mark) => {
         mark.addEventListener("pointerenter", () => {
           marks.forEach((m) => m.classList.toggle("is-on", m === mark));
-          if (mark.hasAttribute("data-need-tips")) {
-            const tip = mark.querySelector("[data-need-tip]");
-            if (tip) tip.textContent = NEED_TIPS[Math.random() < 0.5 ? 0 : 1];
-          }
         });
         mark.addEventListener("pointerleave", () => mark.classList.remove("is-on"));
         mark.addEventListener("focus", () => {
           marks.forEach((m) => m.classList.toggle("is-on", m === mark));
-          if (mark.hasAttribute("data-need-tips")) {
-            const tip = mark.querySelector("[data-need-tip]");
-            if (tip) tip.textContent = NEED_TIPS[Math.random() < 0.5 ? 0 : 1];
-          }
         });
         mark.addEventListener("blur", () => mark.classList.remove("is-on"));
-      });
-
-      shell.addEventListener("click", (e) => {
-        const mark = e.target.closest("[data-open='demo']");
-        if (!mark || !shell.contains(mark)) return;
-        e.preventDefault();
-        openLightbox((window.COCOFHU && window.COCOFHU.harnessDemo) || "assets/harness-demo.webp", "快速提交 Agent 改动位置");
-      });
-
-      if (lbClose) lbClose.addEventListener("click", closeLightbox);
-      if (lightbox) {
-        lightbox.addEventListener("click", (e) => {
-          if (e.target === lightbox) closeLightbox();
-        });
-      }
-      window.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && lightbox && !lightbox.hidden) closeLightbox();
       });
     })();
 

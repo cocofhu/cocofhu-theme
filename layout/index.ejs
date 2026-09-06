@@ -150,7 +150,7 @@
                 <p class="lede">
                   <span class="lede-lead">Hello，大家好，我是 cocofhu。</span>
                   <span class="lede-more">
-                    99 年生，INTP，<b>后端研发</b>。目前负责 <b>SkillHub</b> 产品研发，也在探索 <b>AI Harness</b>——
+                    99年，INTP，<b>后端研发</b>。目前负责 <b>SkillHub</b> 产品研发，也在探索 <b>AI Harness</b>——
                     想做有趣、好用的产品，帮到更多人，也和大家一起进步。
                   </span>
                 </p>
@@ -162,10 +162,30 @@
                   <li>PRODUCT</li>
                 </ul>
 
+                <%
+                  var links = theme.links || {};
+                  var githubUrl = String(links.github || '').trim();
+                  var rssRaw = String(links.rss || '').trim();
+                  var emailRaw = String(links.email || '').trim();
+                  var rssUrl = '';
+                  if (rssRaw) {
+                    rssUrl = /^(https?:|\/\/)/i.test(rssRaw) ? rssRaw : url_for(rssRaw.replace(/^\//, ''));
+                  }
+                  var emailHref = '';
+                  if (emailRaw) {
+                    emailHref = /^mailto:/i.test(emailRaw) ? emailRaw : ('mailto:' + emailRaw);
+                  }
+                %>
                 <div class="links">
-                  <a class="pill pill--primary" href="#"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg>GitHub<span class="arrow" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span></a>
-                  <a class="pill" href="#"><svg class="icon" aria-hidden="true"><use href="#i-rss"/></svg>RSS</a>
-                  <a class="pill" href="#"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>邮箱</a>
+                  <% if (githubUrl) { %>
+                  <a class="pill pill--primary" href="<%= githubUrl %>"<% if (/^https?:/i.test(githubUrl)) { %> target="_blank" rel="noopener"<% } %>><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg>GitHub<span class="arrow" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span></a>
+                  <% } %>
+                  <% if (rssUrl) { %>
+                  <a class="pill" href="<%= rssUrl %>"><svg class="icon" aria-hidden="true"><use href="#i-rss"/></svg>RSS</a>
+                  <% } %>
+                  <% if (emailHref) { %>
+                  <a class="pill" href="<%= emailHref %>"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>邮箱</a>
+                  <% } %>
                 </div>
               </div>
 
@@ -236,16 +256,105 @@
       </span>
     </div>
 
+    <%
+      function stripHtml(html) {
+        return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+      function decorateText(value) {
+        return escapeHtml(value).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+      }
+      function excerptWithHovers(excerpt, hovers) {
+        var text = String(excerpt || '');
+        var ranges = [];
+        (Array.isArray(hovers) ? hovers : []).forEach(function(hover) {
+          var match = String(hover && hover.match || '');
+          var tip = String(hover && hover.tip || '');
+          if (!match) return;
+          var idx = text.indexOf(match);
+          if (idx < 0) return;
+          ranges.push({ start: idx, end: idx + match.length, match: match, tip: tip });
+        });
+        ranges.sort(function(a, b) { return a.start - b.start; });
+        var out = '';
+        var cursor = 0;
+        ranges.forEach(function(range) {
+          if (range.start < cursor) return;
+          out += decorateText(text.slice(cursor, range.start));
+          out += '<button type="button" class="harness-mark">' + escapeHtml(range.match) +
+            '<span class="harness-bubble" role="tooltip">' + escapeHtml(range.tip) + '</span></button>';
+          cursor = range.end;
+        });
+        out += decorateText(text.slice(cursor));
+        return out;
+      }
+      function caseParagraphs(excerpt, hovers) {
+        return String(excerpt || '').split(/\n\s*\n/).filter(function(part) {
+          return part.trim();
+        }).map(function(part) {
+          return '<p>' + excerptWithHovers(part.trim(), hovers) + '</p>';
+        }).join('\n');
+      }
+      function renderCaseCopy(item, iconId, goAsSpan) {
+        item = item || {};
+        var html = '<div class="case-copy">';
+        html += '<p class="case-meta">' + escapeHtml(item.date || '') + '</p>';
+        html += '<div class="case-title">';
+        html += '<span class="case-ico" aria-hidden="true"><svg class="icon"><use href="#' + escapeHtml(iconId) + '"/></svg></span>';
+        html += '<h3>' + escapeHtml(item.title || '') + '</h3>';
+        html += '</div>';
+        html += caseParagraphs(item.excerpt, item.hovers);
+        var url = String(item.url || '');
+        var link = String(item.link || '');
+        if (url && link) {
+          var inner = escapeHtml(link) + ' <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>';
+          if (goAsSpan) {
+            html += '<span class="case-go">' + inner + '</span>';
+          } else {
+            html += '<a class="case-go" href="' + escapeHtml(url) + '"' +
+              (/^https?:\/\//.test(url) ? ' target="_blank" rel="noopener"' : '') + '>' + inner + '</a>';
+          }
+        }
+        html += '</div>';
+        return html;
+      }
+      function mergeWorkItem(item, fallback) {
+        item = item || {};
+        fallback = fallback || {};
+        return {
+          date: item.date || fallback.date || '',
+          title: item.title || fallback.title || '',
+          excerpt: item.excerpt || fallback.excerpt || '',
+          hovers: Array.isArray(item.hovers) ? item.hovers : (fallback.hovers || []),
+          url: item.url != null && String(item.url) !== '' ? item.url : (fallback.url || ''),
+          link: item.link || fallback.link || ''
+        };
+      }
+      var themeWork = theme.work || {};
+      var siteWork = (config.theme_config && config.theme_config.work) || {};
+      var themeWorkItems = Array.isArray(themeWork.items) ? themeWork.items : [];
+      var siteWorkItems = Array.isArray(siteWork.items) && siteWork.items.length ? siteWork.items : themeWorkItems;
+      var workItems = [0, 1, 2].map(function(i) {
+        return mergeWorkItem(siteWorkItems[i], themeWorkItems[i]);
+      });
+      var workTitle = siteWork.title || themeWork.title || '正在进行';
+    %>
     <section class="band band--work" id="work">
       <p class="band-kicker reveal"><svg class="icon" aria-hidden="true"><use href="#i-layout"/></svg>focusing</p>
       <div class="band-head reveal" style="--d:60ms">
-        <h2>正在进行</h2>
+        <h2><%= workTitle %></h2>
         <span class="rule" aria-hidden="true"></span>
         <span class="count">03</span>
       </div>
       <ul class="cases">
         <li class="case reveal" style="--d:80ms">
-          <a href="https://skillhub.cn/" target="_blank" rel="noopener">
+          <a href="<%= workItems[0].url || 'https://skillhub.cn/' %>" target="_blank" rel="noopener">
             <span class="case-no" aria-hidden="true">01</span>
             <div class="case-media" id="skillhubDemo">
               <div class="sh-demo" id="shDemo">
@@ -462,67 +571,14 @@
                 </div>
               </div>
             </div>
-            <div class="case-copy">
-              <p class="case-meta">2026 · PRODUCT</p>
-              <div class="case-title">
-                <span class="case-ico" aria-hidden="true"><svg class="icon"><use href="#i-layers"/></svg></span>
-                <h3>SkillHub 研发负责人</h3>
-              </div>
-              <p>面向中国用户的 <b>AI Skills 社区</b>——帮 Agent <b>搜索、安装、调用</b> Skill。</p>
-              <span class="case-go">打开 skillhub.cn <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></span>
-            </div>
+            <%- renderCaseCopy(workItems[0], 'i-layers', true) %>
           </a>
         </li>
 
         <li class="case reveal" style="--d:120ms">
           <div class="case-shell case-shell--harness">
             <span class="case-no" aria-hidden="true">02</span>
-            <div class="case-copy">
-              <p class="case-meta">2026 · AI HARNESS</p>
-              <div class="case-title">
-                <span class="case-ico" aria-hidden="true"><svg class="icon"><use href="#i-activity"/></svg></span>
-                <h3>AI Harness 提效</h3>
-              </div>
-              <p>
-                深度体验过各种工作流和自动化产品后，发现提效的关键在于：
-                准确<button type="button" class="harness-mark" data-need-tips>
-                  表达需求
-                  <span class="harness-bubble" role="tooltip" data-need-tip></span>
-                </button>，以及
-                <button type="button" class="harness-mark">
-                  理解 Agent 输出
-                  <span class="harness-bubble" role="tooltip">这么多字我也看不懂啊，给我用，最直白，最直接，最不绕弯子......</span>
-                </button>。
-              </p>
-              <p>
-                目前主要在探索如何在 <b>10 秒内</b>读懂 AI 生成的内容——
-                <button type="button" class="harness-mark" data-open="demo">
-                  Demo
-                  <span class="harness-bubble harness-bubble--media" role="tooltip">
-                    <span class="harness-bubble-title">快速提交 Agent 改动位置</span>
-                    <img src="<%= url_for('assets/harness-demo.webp') %>" alt="" width="1024" height="435" loading="lazy" decoding="async">
-                  </span>
-                </button>、
-                <button type="button" class="harness-mark">
-                  流程图
-                  <span class="harness-bubble harness-bubble--media" role="tooltip">
-                    <span class="harness-bubble-title">快速理解后端流程</span>
-                    <img src="<%= url_for('assets/harness-flow.webp') %>" alt="" width="1024" height="520" loading="lazy" decoding="async">
-                  </span>
-                </button>
-                等图形化表达；最近也在想用 AI 会议来对齐需求。
-              </p>
-              <p>
-                开源实践见
-                <a class="harness-mark" href="https://github.com/cocofhu/approving" target="_blank" rel="noopener">
-                  Approving
-                  <span class="harness-bubble" role="tooltip">因为最开始这个工作流完成之后什么也不管，每天就同意审批，所以就取名叫了approving, 嘿嘿，还是要认真确认啊</span>
-                </a>。
-              </p>
-              <a class="case-go" href="https://github.com/cocofhu/approving" target="_blank" rel="noopener">
-                打开 Approving <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
-              </a>
-            </div>
+            <%- renderCaseCopy(workItems[1], 'i-activity', false) %>
             <div class="case-media">
               <figure class="harness-art">
                 <div class="harness-art-stage">
@@ -539,22 +595,7 @@
         <li class="case reveal" style="--d:160ms">
           <div class="case-shell case-shell--express">
             <span class="case-no" aria-hidden="true">03</span>
-            <div class="case-copy">
-              <p class="case-meta">2026 · CREATION</p>
-              <div class="case-title">
-                <span class="case-ico" aria-hidden="true"><svg class="icon"><use href="#i-pen"/></svg></span>
-                <h3>表达与创作</h3>
-              </div>
-              <p>
-                想去学习一些运营方法，让自己的产品被更多人用起来。
-              </p>
-              <p>
-                目前计划把我做的小工具在 GitHub 上推广一下，也在社交媒体上做一些输出。
-              </p>
-              <a class="case-go" href="https://github.com/cocofhu" target="_blank" rel="noopener">
-                去 GitHub 看看 <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
-              </a>
-            </div>
+            <%- renderCaseCopy(workItems[2], 'i-pen', false) %>
             <div class="case-media">
               <figure class="harness-art">
                 <div class="express-art-stage">
@@ -569,9 +610,6 @@
     </section>
 
     <%
-      function stripHtml(html) {
-        return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-      }
       function postSummary(post) {
         var text = stripHtml(post.excerpt) || stripHtml(post.content);
         if (text.length > 90) text = text.slice(0, 90) + '…';
@@ -585,34 +623,56 @@
         return 'NOTE';
       }
       function pad2(n) { return (n < 10 ? '0' : '') + n; }
-      var recentPosts = site.posts.sort('date', -1).limit(theme.recent_limit || 6);
-      var writingPosts = site.posts.sort('date', -1).limit(theme.writing_limit || 4);
+      var themeRecent = theme.recent || {};
+      var siteRecent = (config.theme_config && config.theme_config.recent) || {};
+      var recentConfig = {
+        title: siteRecent.title || themeRecent.title,
+        lede: siteRecent.lede || themeRecent.lede,
+        index_label: siteRecent.index_label || themeRecent.index_label,
+        items: Array.isArray(siteRecent.items) ? siteRecent.items : (themeRecent.items || [])
+      };
+      var recentItems = Array.isArray(recentConfig.items) ? recentConfig.items.filter(function(item) {
+        return item && (item.title || item.excerpt);
+      }) : [];
+      var siteWritingLimit = config.theme_config && config.theme_config.writing_limit;
+      var writingLimitRaw = siteWritingLimit != null && siteWritingLimit !== ''
+        ? siteWritingLimit
+        : theme.writing_limit;
+      var writingLimit = parseInt(String(writingLimitRaw), 10);
+      if (!isFinite(writingLimit) || writingLimit < 0) writingLimit = 4;
+      var writingPosts = writingLimit === 0
+        ? { length: 0, each: function() {} }
+        : site.posts.sort('date', -1).limit(writingLimit);
     %>
-    <% if (recentPosts.length) { %>
+    <% if (recentItems.length) { %>
     <section class="band" id="recent">
       <p class="band-kicker reveal"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg>RECENT</p>
       <div class="band-head reveal" style="--d:60ms">
-        <h2>最近在做</h2>
+        <h2><%= recentConfig.title || '最近在做' %></h2>
         <span class="rule" aria-hidden="true"></span>
-        <span class="count"><%= pad2(recentPosts.length) %> NOTES</span>
+        <span class="count"><%= recentConfig.index_label || (pad2(recentItems.length) + ' NOTES') %></span>
       </div>
-      <p class="band-lede reveal" style="--d:100ms">
-        比项目卡短一点，比朋友圈长一点——正在发生的工程碎片。
-      </p>
+      <% if (recentConfig.lede) { %>
+      <p class="band-lede reveal" style="--d:100ms"><%= recentConfig.lede %></p>
+      <% } %>
 
       <ul class="recent">
-        <% var ri = 0; recentPosts.each(function(post) { %>
+        <% recentItems.forEach(function(item, ri) { %>
         <li class="reveal" style="--d:<%= 80 + ri * 40 %>ms">
-          <a href="<%= url_for(post.path) %>">
-            <time datetime="<%= date(post.date, 'YYYY-MM') %>"><%= date(post.date, 'YYYY · MM') %></time>
+          <div class="recent-row">
+            <time datetime="<%= String(item.date || '').replace(/\s+/g, '') %>"><%= item.date || '' %></time>
             <span>
-              <h3><%= post.title %></h3>
-              <p><%= postSummary(post) %></p>
+              <% if (item.url) { %>
+              <h3><a href="<%= item.url %>"<% if (/^https?:\/\//.test(item.url)) { %> target="_blank" rel="noopener"<% } %>><%= item.title %></a></h3>
+              <% } else { %>
+              <h3><%= item.title %></h3>
+              <% } %>
+              <p><%- excerptWithHovers(item.excerpt, item.hovers) %></p>
             </span>
-            <span class="tag"><%= postTag(post) %></span>
-          </a>
+            <span class="tag"><%= String(item.tag || 'NOTE').toUpperCase() %></span>
+          </div>
         </li>
-        <% ri += 1; }) %>
+        <% }) %>
       </ul>
     </section>
     <% } %>
@@ -626,7 +686,7 @@
         <span class="count"><%= pad2(writingPosts.length) %> NOTES</span>
       </div>
       <p class="band-lede reveal" style="--d:100ms">
-        值得留存的工程细节，写成可以检索的笔记。
+        词不达意，正在努力提升自己
       </p>
 
       <ul class="posts">
@@ -646,13 +706,3 @@
     </section>
     <% } %>
   </main>
-
-  <div class="harness-lightbox" id="harnessLightbox" hidden>
-    <div class="harness-lightbox-card" role="dialog" aria-modal="true" aria-labelledby="harnessLightboxTitle">
-      <header>
-        <span id="harnessLightboxTitle">快速提交 Agent 改动位置</span>
-        <button type="button" id="harnessLightboxClose">CLOSE</button>
-      </header>
-      <img id="harnessLightboxImg" src="<%= url_for('assets/harness-demo.webp') %>" alt="Approving Demo 窗口预览" width="1024" height="435" loading="lazy" decoding="async">
-    </div>
-  </div>

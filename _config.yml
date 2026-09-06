@@ -1,2 +1,57 @@
-recent_limit: 6
 writing_limit: 4
+links:
+  github: https://github.com/cocofhu
+  rss: atom.xml
+  email: ""
+work:
+  title: 正在进行
+  items:
+    - date: "2026 · PRODUCT"
+      title: SkillHub 研发负责人
+      url: https://skillhub.cn/
+      link: 打开 skillhub.cn
+      excerpt: 面向中国用户的 **AI Skills 社区**——帮 Agent **搜索、安装、调用** Skill。
+      hovers: []
+    - date: "2026 · AI HARNESS"
+      title: AI Harness 提效
+      url: https://github.com/cocofhu/approving
+      link: 打开 Approving
+      excerpt: |
+        深度体验过各种工作流和自动化产品后，对于我来说，最大的问题在于：准确表达需求，以及理解 Agent 输出。
+
+        目前主要在探索如何在 **10 秒内**读懂 AI 生成的内容——Demo、流程图等图形化表达；最近也在想用 AI 会议来对齐需求。
+
+        开源实践见 Approving。
+      hovers:
+        - match: 表达需求
+          tip: 对对对就是这样，太对了
+        - match: 理解 Agent 输出
+          tip: 这么多字我也看不懂啊，给我用，最直白，最直接，最不绕弯子......
+        - match: Demo
+          tip: 快速提交 Agent 改动位置
+        - match: 流程图
+          tip: 快速理解后端流程
+        - match: Approving
+          tip: 因为最开始这个工作流完成之后什么也不管，每天就同意审批，所以就取名叫了approving, 嘿嘿，还是要认真确认啊
+    - date: "2026 · CREATION"
+      title: 表达与创作
+      url: https://github.com/cocofhu
+      link: 去 GitHub 看看
+      excerpt: |
+        想去学习一些运营方法，让自己的产品被更多人用起来。
+
+        目前计划把我做的小工具在 GitHub 上推广一下，也在社交媒体上做一些输出。
+      hovers: []
+recent:
+  title: 最近在做
+  lede: 看看我在做什么
+  index_label: 01 NOTES
+  items:
+    - date: "2026 · 09"
+      title: Hello Open Pages
+      tag: WELCOME
+      url: ""
+      excerpt: 在这里用 Typora 式所见即所得写 Markdown。
+      hovers:
+        - match: Typora 式
+          tip: 对对对就是这样，太对了

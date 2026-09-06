@@ -1,0 +1,9 @@
+<% var tocHtml = toc(page.content, { list_number: false, max_depth: 3 }); %>
+<% if (tocHtml) { %>
+<aside class="art-toc" id="artToc">
+  <p class="art-kicker">INDEX</p>
+  <nav class="art-toc-nav" aria-label="文章目录">
+    <%- tocHtml %>
+  </nav>
+</aside>
+<% } %>
