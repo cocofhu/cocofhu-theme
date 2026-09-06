@@ -9,10 +9,24 @@
       <%- partial('_partial/cocofhu-sig') %>
     </a>
     <p class="art-kicker">PAGE</p>
-    <% var tocHtml = toc(page.content, { list_number: false, max_depth: 3 }); %>
-    <% if (tocHtml) { %>
-    <button type="button" class="art-toc-toggle" id="artTocToggle" aria-expanded="false" aria-controls="artToc">目录</button>
-    <% } %>
+    <div class="art-bar-actions">
+      <% var tocHtml = toc(page.content, { list_number: false, max_depth: 3 }); %>
+      <% if (tocHtml) { %>
+      <button type="button" class="art-toc-toggle" id="artTocToggle" aria-expanded="false" aria-controls="artToc">目录</button>
+      <% } %>
+      <button
+        type="button"
+        class="art-theme-seg"
+        id="artThemeSeg"
+        role="switch"
+        aria-checked="false"
+        aria-label="当前深色主题，点击切换为浅色"
+      >
+        <i class="art-theme-seg__thumb" aria-hidden="true"></i>
+        <span class="art-theme-seg__lab" data-for="dark">DARK</span>
+        <span class="art-theme-seg__lab" data-for="light">LIGHT</span>
+      </button>
+    </div>
   </header>
   <div class="art-shell">
     <main class="art-main">
