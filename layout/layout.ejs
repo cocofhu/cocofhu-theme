@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><% if (is_home()) { %><%= config.title || 'cocofhu' %> — <%= config.subtitle || '后端工程师' %><% } else { %><%= page.title || config.title || 'cocofhu' %><% if (config.title && page.title) { %> — <%= config.title %><% } %><% } %></title>
+  <link rel="icon" type="image/png" href="<%= url_for('assets/favicon.png') %>" sizes="512x512" />
+  <link rel="icon" type="image/png" sizes="32x32" href="<%= url_for('assets/favicon-32.png') %>" />
+  <link rel="icon" type="image/png" sizes="16x16" href="<%= url_for('assets/favicon-16.png') %>" />
+  <link rel="icon" href="<%= url_for('favicon.ico') %>" sizes="any" />
+  <link rel="apple-touch-icon" sizes="180x180" href="<%= url_for('assets/apple-touch-icon.png') %>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=IBM+Plex+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="<%= url_for('css/site.css') %>" />
+</head>
+<body<% if (!is_home()) { %> class="is-article"<% } %>>
+  <%- body %>
+  <% if (is_home()) { %>
+  <script>
+    window.COCOFHU = {
+      starIntro: <%- JSON.stringify(url_for('assets/star-handoff.mp4') + '?v=bake2') %>,
+      harnessDemo: <%- JSON.stringify(url_for('assets/harness-demo.webp')) %>
+    };
+  </script>
+  <script src="<%= url_for('js/site.js') %>"></script>
+  <% } %>
+</body>
+</html>
