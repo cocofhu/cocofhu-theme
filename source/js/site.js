@@ -898,6 +898,8 @@
 
       const showCicdPoster = () => {
         if (!stage) return;
+        // Hide empty/black video so stage poster can show (WeChat fail path)
+        el.classList.remove("is-live");
         const poster = el.getAttribute("poster") || "";
         if (poster) {
           stage.style.backgroundImage = `url("${poster}")`;
@@ -1048,11 +1050,11 @@
           if (reduceMotion) {
             el.pause();
             showCicdPoster();
-            el.classList.add("is-live");
+            // Poster path: keep video opacity 0 via missing is-live
             return;
           }
           if (phoneSplit()) return;
-          el.classList.add("is-live");
+          // Do not set is-live until frames advance — otherwise black video covers poster
           tryPlay();
           ensureStallWatch();
         },
