@@ -211,16 +211,19 @@
       starBg.style.removeProperty("background-position");
     }
 
+    // The still lives on data-poster, not the poster attribute: it is the sky
+    // the handoff ends on, and the clip opens on an almost empty one, so
+    // letting the element paint it pre-roll reads as a rewind.
     function showStarPosterFallback() {
       if (!starBg) return;
-      const poster = (starIntro && starIntro.getAttribute("poster")) || "";
+      const poster = (starIntro && starIntro.getAttribute("data-poster")) || "";
       if (poster) {
         starBg.style.backgroundImage = `url("${poster}")`;
         starBg.style.backgroundSize = "cover";
         starBg.style.backgroundPosition = "center";
       }
       starBg.classList.add("is-fallback");
-      // Prefer intro element (keeps poster attr / last frame) over blank loop
+      // Prefer the intro element, which may still hold a real last frame
       if (starIntro) showStar(starIntro);
     }
 
@@ -497,8 +500,9 @@
       if (on && !starPlayed && !starArmed) {
         starArmed = true;
         starLooping = false;
-        // g1.1: keep poster until a real intro frame advances — never clear-then-wait
-        showStarPosterFallback();
+        // The clip fills an empty sky, so it is its own opening frame — showing
+        // the finished sky first and then starting playback rewinds on screen.
+        // The still is only worth it once the clip is known not to be coming.
         showStar(starIntro);
         playVid(starIntro, showStarPosterFallback);
         waitForAdvance(starIntro, (ok) => {
