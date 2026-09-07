@@ -3327,6 +3327,10 @@
       object-fit: cover;
       object-position: center 42%;
       opacity: 0;
+      /* The handoff keeps both clips alive, so the idle one must not paint.
+         Opacity alone is not enough where video composites outside the page
+         layer; visibility still lets it buffer and advance currentTime. */
+      visibility: hidden;
       filter: none;
       transform: scale(1);
       transform-origin: 62% 36%;
@@ -3335,7 +3339,7 @@
     .star-bg video#starIntro { z-index: 2; }
     .star-bg video#starLoop { z-index: 1; }
 
-    .star-bg video.is-shown { opacity: 0.82; }
+    .star-bg video.is-shown { opacity: 0.82; visibility: visible; }
 
     @media (max-width: 700px) {
       .star-bg video.is-shown { opacity: 0.55; }
