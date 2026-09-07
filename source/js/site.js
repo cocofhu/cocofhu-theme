@@ -133,7 +133,9 @@
       try { starIntro.load(); } catch (_) {}
     }
 
-    // g1.1: timeout + onFail so poster/intro stay if play never starts
+    // g1.1: timeout + onFail so poster/intro stay if play never starts.
+    // These clips are preload="none", so play() is also what starts the fetch —
+    // waiting on canplay first would leave readyState at 0 forever.
     function playVid(el, onFail) {
       if (!el) {
         if (typeof onFail === "function") onFail();
@@ -154,15 +156,15 @@
           settled = true;
         }
       };
-      if (el.readyState >= 2) go();
-      else {
-        el.addEventListener("canplay", go, { once: true });
-        el.addEventListener("error", fail, { once: true });
-      }
+      go();
       setTimeout(() => {
         if (settled) return;
-        if (el.readyState >= 2) go();
-        else fail();
+        // Still buffering counts as alive — only a stopped element is a failure
+        if (!el.paused && el.readyState >= 2) {
+          settled = true;
+          return;
+        }
+        fail();
       }, PLAY_WAIT_MS);
     }
 
@@ -257,12 +259,14 @@
         }
       };
       try { el.load(); } catch (_) {}
-      el.addEventListener("canplay", attempt, { once: true });
-      el.addEventListener("error", fail, { once: true });
+      attempt();
       setTimeout(() => {
         if (settled) return;
-        if (el.readyState >= 2) attempt();
-        else fail();
+        if (!el.paused && el.readyState >= 2) {
+          ok();
+          return;
+        }
+        fail();
       }, PLAY_WAIT_MS);
     }
 
