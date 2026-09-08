@@ -3,24 +3,43 @@
   "description": "cocofhu 个人站主题：开场文案 / 正在进行 / 最近在做可在设置里编辑（含文案 hover），写作来自博客文章。",
   "settings": [
     {
-      "key": "intro_lead",
-      "label": "开场首句",
-      "hint": "显示器里第一行。可用 **加粗**；选中文字可加 hover。",
-      "yamlPath": "intro.lead",
+      "key": "intro_items",
+      "label": "开场文案",
+      "hint": "固定一条。首句在显示器里；介绍滑入后展开。可用 **加粗**；选中文字可加 hover。",
+      "yamlPath": "intro.items",
       "group": "开场文案",
-      "type": "annotated-text",
-      "tipsKey": "hovers",
-      "default": "Hello，大家好，我是 cocofhu。"
-    },
-    {
-      "key": "intro_more",
-      "label": "开场介绍",
-      "hint": "滑入屏幕后展开。可用 **加粗**；选中文字可加 hover（与首句共用）。",
-      "yamlPath": "intro.more",
-      "group": "开场文案",
-      "type": "annotated-text",
-      "tipsKey": "hovers",
-      "default": "99年，INTP，**后端研发**。目前负责 **SkillHub** 产品研发，也在探索 **AI Harness**——想做有趣、好用的产品，帮到更多人，也和大家一起进步。"
+      "type": "list",
+      "itemLabel": "开场",
+      "minItems": 1,
+      "maxItems": 1,
+      "itemFields": [
+        {
+          "key": "lead",
+          "label": "首句",
+          "type": "annotated-text",
+          "tipsKey": "hovers",
+          "placeholder": "Hello，大家好，我是 cocofhu。",
+          "default": "Hello，大家好，我是 cocofhu。"
+        },
+        {
+          "key": "more",
+          "label": "介绍",
+          "type": "annotated-text",
+          "tipsKey": "hovers",
+          "placeholder": "可用 **加粗**；选中文字可加 hover",
+          "default": "99年，INTP，**后端研发**。目前负责 **SkillHub** 产品研发，也在探索 **AI Harness**——想做有趣、好用的产品，帮到更多人，也和大家一起进步。"
+        }
+      ],
+      "default": [
+        {
+          "lead": "Hello，大家好，我是 cocofhu。",
+          "more": "99年，INTP，**后端研发**。目前负责 **SkillHub** 产品研发，也在探索 **AI Harness**——想做有趣、好用的产品，帮到更多人，也和大家一起进步。",
+          "hovers": [
+            { "match": "SkillHub", "tip": "面向中国用户的 AI Skills 社区" },
+            { "match": "AI Harness", "tip": "让人和 Agent 更好协作的工作流" }
+          ]
+        }
+      ]
     },
     {
       "key": "intro_tags",

@@ -208,14 +208,23 @@
                   }
                   var themeIntro = theme.intro || {};
                   var siteIntro = (config.theme_config && config.theme_config.intro) || {};
-                  var introHovers = Array.isArray(siteIntro.hovers) ? siteIntro.hovers
-                    : (Array.isArray(themeIntro.hovers) ? themeIntro.hovers : []);
-                  var introLead = siteIntro.lead != null && String(siteIntro.lead) !== ''
-                    ? siteIntro.lead
-                    : (themeIntro.lead || 'Hello，大家好，我是 cocofhu。');
-                  var introMore = siteIntro.more != null && String(siteIntro.more) !== ''
-                    ? siteIntro.more
-                    : (themeIntro.more || '');
+                  // Open Pages edits intro.items[0] (annotated-text only works inside list items)
+                  function pickIntroBlock(src) {
+                    src = src || {};
+                    if (Array.isArray(src.items) && src.items[0]) return src.items[0];
+                    if (src.lead != null || src.more != null || Array.isArray(src.hovers)) return src;
+                    return {};
+                  }
+                  var themeBlock = pickIntroBlock(themeIntro);
+                  var siteBlock = pickIntroBlock(siteIntro);
+                  var introHovers = Array.isArray(siteBlock.hovers) ? siteBlock.hovers
+                    : (Array.isArray(themeBlock.hovers) ? themeBlock.hovers : []);
+                  var introLead = siteBlock.lead != null && String(siteBlock.lead) !== ''
+                    ? siteBlock.lead
+                    : (themeBlock.lead || 'Hello，大家好，我是 cocofhu。');
+                  var introMore = siteBlock.more != null && String(siteBlock.more) !== ''
+                    ? siteBlock.more
+                    : (themeBlock.more || '');
                   var introTagsRaw = Array.isArray(siteIntro.tags) ? siteIntro.tags
                     : (Array.isArray(themeIntro.tags) ? themeIntro.tags : []);
                   var introTags = introTagsRaw.map(function(tag) {
