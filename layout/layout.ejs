@@ -31,7 +31,11 @@
   <% if (is_home()) { %>
   <script>
     window.COCOFHU = {
-      starIntro: <%- JSON.stringify(url_for('assets/star-handoff.mp4') + '?v=bake2') %>
+      starIntro: <%- JSON.stringify(url_for('assets/star-handoff.mp4') + '?v=bake2') %>,
+      starLoop: <%- JSON.stringify(url_for('assets/star-loop.mp4') + '?v=bake2') %>,
+      cicd: <%- JSON.stringify(url_for('cicd.mp4') + '?v=6') %>,
+      cicdPoster: <%- JSON.stringify(url_for('assets/cicd-poster.jpg') + '?v=1') %>,
+      starPoster: <%- JSON.stringify(url_for('assets/star-scroll-poster.jpg') + '?v=bake1') %>
     };
   </script>
   <script src="<%= url_for('js/site.js') %>"></script>

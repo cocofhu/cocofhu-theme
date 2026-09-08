@@ -24,6 +24,7 @@
       <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.99 5.73a2 2 0 0 1-2.02 0L2 7"/></symbol>
       <symbol id="i-rotate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
       <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
     </defs>
   </svg>
 
@@ -159,20 +160,86 @@
                   </svg>
                 </div>
 
+                <%
+                  function escapeHtmlIntro(value) {
+                    return String(value || '')
+                      .replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;');
+                  }
+                  function decorateTextIntro(value) {
+                    return escapeHtmlIntro(value).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+                  }
+                  function excerptWithHoversIntro(excerpt, hovers) {
+                    var text = String(excerpt || '');
+                    var ranges = [];
+                    (Array.isArray(hovers) ? hovers : []).forEach(function(hover) {
+                      var match = String(hover && hover.match || '');
+                      var tip = String(hover && hover.tip || '');
+                      if (!match) return;
+                      var idx = text.indexOf(match);
+                      if (idx < 0) return;
+                      var end = idx + match.length;
+                      var bold = idx >= 2 && text.slice(idx - 2, idx) === '**' && text.slice(end, end + 2) === '**';
+                      ranges.push({
+                        start: bold ? idx - 2 : idx,
+                        end: bold ? end + 2 : end,
+                        match: match,
+                        tip: tip,
+                        bold: bold
+                      });
+                    });
+                    ranges.sort(function(a, b) { return a.start - b.start; });
+                    var out = '';
+                    var cursor = 0;
+                    ranges.forEach(function(range) {
+                      if (range.start < cursor) return;
+                      out += decorateTextIntro(text.slice(cursor, range.start));
+                      var label = range.bold
+                        ? ('<b>' + escapeHtmlIntro(range.match) + '</b>')
+                        : escapeHtmlIntro(range.match);
+                      out += '<button type="button" class="harness-mark">' + label +
+                        '<span class="harness-bubble" role="tooltip">' + escapeHtmlIntro(range.tip) + '</span></button>';
+                      cursor = range.end;
+                    });
+                    out += decorateTextIntro(text.slice(cursor));
+                    return out;
+                  }
+                  var themeIntro = theme.intro || {};
+                  var siteIntro = (config.theme_config && config.theme_config.intro) || {};
+                  var introHovers = Array.isArray(siteIntro.hovers) ? siteIntro.hovers
+                    : (Array.isArray(themeIntro.hovers) ? themeIntro.hovers : []);
+                  var introLead = siteIntro.lead != null && String(siteIntro.lead) !== ''
+                    ? siteIntro.lead
+                    : (themeIntro.lead || 'Hello，大家好，我是 cocofhu。');
+                  var introMore = siteIntro.more != null && String(siteIntro.more) !== ''
+                    ? siteIntro.more
+                    : (themeIntro.more || '');
+                  var introTagsRaw = Array.isArray(siteIntro.tags) ? siteIntro.tags
+                    : (Array.isArray(themeIntro.tags) ? themeIntro.tags : []);
+                  var introTags = introTagsRaw.map(function(tag) {
+                    if (tag == null) return '';
+                    if (typeof tag === 'string') return tag.trim();
+                    return String(tag.label || tag.name || tag.text || '').trim();
+                  }).filter(Boolean);
+                %>
                 <p class="lede">
-                  <span class="lede-lead">Hello，大家好，我是 cocofhu。</span>
+                  <span class="lede-lead"><%- excerptWithHoversIntro(String(introLead).replace(/\s+/g, ' ').trim(), introHovers) %></span>
+                  <% if (String(introMore).trim()) { %>
                   <span class="lede-more">
-                    99年，INTP，<b>后端研发</b>。目前负责 <b>SkillHub</b> 产品研发，也在探索 <b>AI Harness</b>——
-                    想做有趣、好用的产品，帮到更多人，也和大家一起进步。
+                    <%- excerptWithHoversIntro(String(introMore).replace(/\s*\n\s*/g, ' ').replace(/\s+/g, ' ').trim(), introHovers) %>
                   </span>
+                  <% } %>
                 </p>
 
+                <% if (introTags.length) { %>
                 <ul class="tags">
-                  <li>SKILLHUB</li>
-                  <li>AI HARNESS</li>
-                  <li>BACKEND</li>
-                  <li>PRODUCT</li>
+                  <% introTags.forEach(function(tag) { %>
+                  <li><%= tag %></li>
+                  <% }) %>
                 </ul>
+                <% } %>
 
                 <%
                   var links = theme.links || {};
@@ -296,7 +363,15 @@
           if (!match) return;
           var idx = text.indexOf(match);
           if (idx < 0) return;
-          ranges.push({ start: idx, end: idx + match.length, match: match, tip: tip });
+          var end = idx + match.length;
+          var bold = idx >= 2 && text.slice(idx - 2, idx) === '**' && text.slice(end, end + 2) === '**';
+          ranges.push({
+            start: bold ? idx - 2 : idx,
+            end: bold ? end + 2 : end,
+            match: match,
+            tip: tip,
+            bold: bold
+          });
         });
         ranges.sort(function(a, b) { return a.start - b.start; });
         var out = '';
@@ -304,7 +379,10 @@
         ranges.forEach(function(range) {
           if (range.start < cursor) return;
           out += decorateText(text.slice(cursor, range.start));
-          out += '<button type="button" class="harness-mark">' + escapeHtml(range.match) +
+          var label = range.bold
+            ? ('<b>' + escapeHtml(range.match) + '</b>')
+            : escapeHtml(range.match);
+          out += '<button type="button" class="harness-mark">' + label +
             '<span class="harness-bubble" role="tooltip">' + escapeHtml(range.tip) + '</span></button>';
           cursor = range.end;
         });
@@ -722,4 +800,50 @@
       </ul>
     </section>
     <% } %>
+
+    <%
+      var themeAbout = theme.about || {};
+      var siteAbout = (config.theme_config && config.theme_config.about) || {};
+      var aboutConfig = {
+        title: siteAbout.title || themeAbout.title || '关于我',
+        lede: siteAbout.lede || themeAbout.lede || '',
+        body: siteAbout.body || themeAbout.body || '',
+        video: siteAbout.video || themeAbout.video || 'assets/about-me.webm'
+      };
+      var aboutParas = String(aboutConfig.body || '')
+        .split(/\n\s*\n/)
+        .map(function(p) { return p.trim(); })
+        .filter(Boolean);
+    %>
+    <section class="band band--about" id="about">
+      <p class="band-kicker reveal"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>ABOUT</p>
+      <div class="band-head reveal" style="--d:60ms">
+        <h2><%= aboutConfig.title %></h2>
+        <span class="rule" aria-hidden="true"></span>
+        <span class="count">ME</span>
+      </div>
+      <% if (aboutConfig.lede) { %>
+      <p class="band-lede reveal" style="--d:100ms"><%= aboutConfig.lede %></p>
+      <% } %>
+      <div class="about-copy reveal" style="--d:140ms">
+        <% aboutParas.forEach(function(para) { %>
+        <p><%- excerptWithHovers(para, []) %></p>
+        <% }) %>
+      </div>
+    </section>
+
+    <aside class="about-buddy" id="aboutBuddy" aria-hidden="true">
+      <video
+        id="aboutBuddyVideo"
+        class="about-buddy-video"
+        src="<%= url_for(aboutConfig.video) %>?v=1"
+        muted
+        playsinline
+        webkit-playsinline="true"
+        x5-video-player-type="h5-page"
+        disablepictureinpicture
+        preload="none"
+        aria-label="关于我"
+      ></video>
+    </aside>
   </main>
