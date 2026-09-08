@@ -230,28 +230,27 @@
     {
       "key": "about_items",
       "label": "关于我文案",
-      "hint": "固定一条。空一行分段；可用 **加粗**；选中文字可加 hover。滑到本区块时右下角会播放形象视频。",
+      "hint": "固定一条。在「文案」里选中文字可加 hover 说明。滑到本区块时右下角会播放形象视频。",
       "yamlPath": "about.items",
       "group": "关于我",
       "type": "list",
-      "itemLabel": "文案",
+      "itemLabel": "一条介绍",
       "minItems": 1,
       "maxItems": 1,
       "itemFields": [
         {
           "key": "lede",
           "label": "导语",
-          "type": "annotated-text",
-          "tipsKey": "hovers",
+          "type": "text",
           "placeholder": "滑到这里打个招呼",
           "default": "滑到这里打个招呼"
         },
         {
           "key": "body",
-          "label": "正文",
+          "label": "文案",
           "type": "annotated-text",
           "tipsKey": "hovers",
-          "placeholder": "空一行分段，可用 **加粗**",
+          "placeholder": "空一行分段，可用 **加粗**；选中文字可加说明",
           "default": "Hello，大家好，我是 **cocofhu**。\n\n99年，INTP，**后端研发**。目前负责 SkillHub 产品研发，也在探索 AI Harness——想做有趣、好用的产品，帮到更多人，也和大家一起进步。"
         }
       ],
