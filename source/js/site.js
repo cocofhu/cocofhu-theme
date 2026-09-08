@@ -1555,7 +1555,7 @@
     /* Keep one text bubble visible while hovering a mark */
     (() => {
       const roots = [
-        ...document.querySelectorAll(".case-shell--harness, .lede, .recent, .about-copy")
+        ...document.querySelectorAll(".case-shell--harness, .lede, .recent, .about-copy, .band--about")
       ];
       roots.forEach((root) => {
         const marks = [...root.querySelectorAll(".harness-mark")];

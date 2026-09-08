@@ -813,10 +813,24 @@
     <%
       var themeAbout = theme.about || {};
       var siteAbout = (config.theme_config && config.theme_config.about) || {};
+      function pickAboutBlock(src) {
+        src = src || {};
+        if (Array.isArray(src.items) && src.items[0]) return src.items[0];
+        if (src.lede != null || src.body != null || Array.isArray(src.hovers)) return src;
+        return {};
+      }
+      var themeAboutBlock = pickAboutBlock(themeAbout);
+      var siteAboutBlock = pickAboutBlock(siteAbout);
+      var aboutHovers = Array.isArray(siteAboutBlock.hovers) ? siteAboutBlock.hovers
+        : (Array.isArray(themeAboutBlock.hovers) ? themeAboutBlock.hovers : []);
       var aboutConfig = {
         title: siteAbout.title || themeAbout.title || '关于我',
-        lede: siteAbout.lede || themeAbout.lede || '',
-        body: siteAbout.body || themeAbout.body || '',
+        lede: (siteAboutBlock.lede != null && String(siteAboutBlock.lede) !== '')
+          ? siteAboutBlock.lede
+          : (themeAboutBlock.lede || ''),
+        body: (siteAboutBlock.body != null && String(siteAboutBlock.body) !== '')
+          ? siteAboutBlock.body
+          : (themeAboutBlock.body || ''),
         video: siteAbout.video || themeAbout.video || 'assets/about-me.webm'
       };
       var aboutParas = String(aboutConfig.body || '')
@@ -832,11 +846,11 @@
         <span class="count">ME</span>
       </div>
       <% if (aboutConfig.lede) { %>
-      <p class="band-lede reveal" style="--d:100ms"><%= aboutConfig.lede %></p>
+      <p class="band-lede reveal" style="--d:100ms"><%- excerptWithHovers(aboutConfig.lede, aboutHovers) %></p>
       <% } %>
       <div class="about-copy reveal" style="--d:140ms">
         <% aboutParas.forEach(function(para) { %>
-        <p><%- excerptWithHovers(para, []) %></p>
+        <p><%- excerptWithHovers(para, aboutHovers) %></p>
         <% }) %>
       </div>
     </section>

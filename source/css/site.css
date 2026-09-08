@@ -2355,7 +2355,9 @@
 
     .case-copy .harness-mark,
     .recent .harness-mark,
-    .lede .harness-mark {
+    .lede .harness-mark,
+    .about-copy .harness-mark,
+    .band--about .band-lede .harness-mark {
       position: relative;
       display: inline-block;
       margin: 0 0.05em;
@@ -2382,7 +2384,13 @@
     .recent .harness-mark.is-on,
     .lede .harness-mark:hover,
     .lede .harness-mark:focus-visible,
-    .lede .harness-mark.is-on {
+    .lede .harness-mark.is-on,
+    .about-copy .harness-mark:hover,
+    .about-copy .harness-mark:focus-visible,
+    .about-copy .harness-mark.is-on,
+    .band--about .band-lede .harness-mark:hover,
+    .band--about .band-lede .harness-mark:focus-visible,
+    .band--about .band-lede .harness-mark.is-on {
       background: rgba(126, 175, 255, 0.32);
       box-shadow: 0 0 0 1px rgba(126, 175, 255, 0.35);
       outline: none;
@@ -2455,7 +2463,13 @@
     .recent .harness-mark.is-on .harness-bubble,
     .lede .harness-mark:hover .harness-bubble,
     .lede .harness-mark:focus-visible .harness-bubble,
-    .lede .harness-mark.is-on .harness-bubble {
+    .lede .harness-mark.is-on .harness-bubble,
+    .about-copy .harness-mark:hover .harness-bubble,
+    .about-copy .harness-mark:focus-visible .harness-bubble,
+    .about-copy .harness-mark.is-on .harness-bubble,
+    .band--about .band-lede .harness-mark:hover .harness-bubble,
+    .band--about .band-lede .harness-mark:focus-visible .harness-bubble,
+    .band--about .band-lede .harness-mark.is-on .harness-bubble {
       opacity: 1;
       transform: translateX(-50%) translateY(0) scale(1);
     }

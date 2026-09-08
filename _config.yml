@@ -72,9 +72,11 @@ recent:
           tip: 对对对就是这样，太对了
 about:
   title: 关于我
-  lede: 滑到这里打个招呼
-  body: |
-    Hello，大家好，我是 **cocofhu**。
+  items:
+    - lede: 滑到这里打个招呼
+      body: |
+        Hello，大家好，我是 **cocofhu**。
 
-    99年，INTP，**后端研发**。目前负责 SkillHub 产品研发，也在探索 AI Harness——想做有趣、好用的产品，帮到更多人，也和大家一起进步。
+        99年，INTP，**后端研发**。目前负责 SkillHub 产品研发，也在探索 AI Harness——想做有趣、好用的产品，帮到更多人，也和大家一起进步。
+      hovers: []
   video: assets/about-me.webm

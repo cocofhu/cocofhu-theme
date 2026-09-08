@@ -228,21 +228,40 @@
       "default": "关于我"
     },
     {
-      "key": "about_lede",
-      "label": "导语",
-      "yamlPath": "about.lede",
+      "key": "about_items",
+      "label": "关于我文案",
+      "hint": "固定一条。空一行分段；可用 **加粗**；选中文字可加 hover。滑到本区块时右下角会播放形象视频。",
+      "yamlPath": "about.items",
       "group": "关于我",
-      "type": "text",
-      "default": "滑到这里打个招呼"
-    },
-    {
-      "key": "about_body",
-      "label": "正文",
-      "hint": "空一行分段；可用 **加粗**。滑到本区块时右下角会播放形象视频。",
-      "yamlPath": "about.body",
-      "group": "关于我",
-      "type": "text",
-      "default": "Hello，大家好，我是 **cocofhu**。\n\n99年，INTP，**后端研发**。目前负责 SkillHub 产品研发，也在探索 AI Harness——想做有趣、好用的产品，帮到更多人，也和大家一起进步。"
+      "type": "list",
+      "itemLabel": "文案",
+      "minItems": 1,
+      "maxItems": 1,
+      "itemFields": [
+        {
+          "key": "lede",
+          "label": "导语",
+          "type": "annotated-text",
+          "tipsKey": "hovers",
+          "placeholder": "滑到这里打个招呼",
+          "default": "滑到这里打个招呼"
+        },
+        {
+          "key": "body",
+          "label": "正文",
+          "type": "annotated-text",
+          "tipsKey": "hovers",
+          "placeholder": "空一行分段，可用 **加粗**",
+          "default": "Hello，大家好，我是 **cocofhu**。\n\n99年，INTP，**后端研发**。目前负责 SkillHub 产品研发，也在探索 AI Harness——想做有趣、好用的产品，帮到更多人，也和大家一起进步。"
+        }
+      ],
+      "default": [
+        {
+          "lede": "滑到这里打个招呼",
+          "body": "Hello，大家好，我是 **cocofhu**。\n\n99年，INTP，**后端研发**。目前负责 SkillHub 产品研发，也在探索 AI Harness——想做有趣、好用的产品，帮到更多人，也和大家一起进步。",
+          "hovers": []
+        }
+      ]
     }
   ]
 }
