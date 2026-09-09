@@ -80,3 +80,5 @@ about:
         99年，INTP，**后端研发**。目前负责 SkillHub 产品研发，也在探索 AI Harness——想做有趣、好用的产品，帮到更多人，也和大家一起进步。
       hovers: []
   video: assets/about-me.webm
+  image: assets/about-me.webp
+  still: assets/about-me-last.webp

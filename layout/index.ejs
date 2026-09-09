@@ -831,7 +831,9 @@
         body: (siteAboutBlock.body != null && String(siteAboutBlock.body) !== '')
           ? siteAboutBlock.body
           : (themeAboutBlock.body || ''),
-        video: siteAbout.video || themeAbout.video || 'assets/about-me.webm'
+        video: siteAbout.video || themeAbout.video || 'assets/about-me.webm',
+        image: siteAbout.image || themeAbout.image || 'assets/about-me.webp',
+        still: siteAbout.still || themeAbout.still || 'assets/about-me-last.webp'
       };
       var aboutParas = String(aboutConfig.body || '')
         .split(/\n\s*\n/)
@@ -855,7 +857,13 @@
       </div>
     </section>
 
-    <aside class="about-buddy" id="aboutBuddy" aria-hidden="true">
+    <aside
+      class="about-buddy"
+      id="aboutBuddy"
+      aria-hidden="true"
+      data-image="<%= url_for(aboutConfig.image) %>?v=1"
+      data-still="<%= url_for(aboutConfig.still) %>?v=1"
+    >
       <video
         id="aboutBuddyVideo"
         class="about-buddy-video"
@@ -868,5 +876,12 @@
         preload="none"
         aria-label="关于我"
       ></video>
+      <img
+        id="aboutBuddyImage"
+        class="about-buddy-image"
+        alt=""
+        decoding="async"
+        draggable="false"
+      />
     </aside>
   </main>
