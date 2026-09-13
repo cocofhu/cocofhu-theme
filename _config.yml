@@ -20,6 +20,8 @@ intro:
     - PRODUCT
 work:
   title: 正在进行
+  # true 时首页不渲染整段 #work（含三卡与插画）；缺省 false。站点 theme_config.work.hidden 优先于主题值。
+  hidden: false
   items:
     - date: "2026 · PRODUCT"
       title: SkillHub 研发负责人

@@ -96,6 +96,15 @@
       "default": "正在进行"
     },
     {
+      "key": "work_hidden",
+      "label": "隐藏本区块",
+      "hint": "打开后首页不输出整段「正在进行」（三卡与插画都不会出现）。可填 true / false；空或无法识别则显示。三条文案仍可编辑保存。",
+      "yamlPath": "work.hidden",
+      "group": "正在进行",
+      "type": "boolean",
+      "default": false
+    },
+    {
       "key": "work_items",
       "label": "三段文案",
       "hint": "固定三条，只改文案。插画和 SkillHub 演示不会变。空一行分段；选中文字可加 hover。",
