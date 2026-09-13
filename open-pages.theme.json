@@ -101,7 +101,7 @@
       "hint": "打开后首页不输出整段「正在进行」（三卡与插画都不会出现）。可填 true / false；空或无法识别则显示。三条文案仍可编辑保存。",
       "yamlPath": "work.hidden",
       "group": "正在进行",
-      "type": "boolean",
+      "type": "toggle",
       "default": false
     },
     {
