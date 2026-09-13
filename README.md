@@ -6,7 +6,7 @@ cocofhu 个人站主题。首页开场、显示器和作品区插画写在主题
 
 1. 设置页安装来源填 `cocofhu/cocofhu-theme`
 2. 把站点主题改成 `cocofhu`
-3. 在主题设置里编辑「正在进行」（固定三条文案）和「最近在做」：选中文字可加 hover 说明
+3. 在主题设置里编辑「正在进行」（可用「隐藏本区块」整段关闭首页该区；固定三条文案仍可改）和「最近在做」：选中文字可加 hover 说明
 4. 写 Markdown 文章后预览：「写作」列表出现标题和链接
 
 本地 Hexo：
@@ -32,6 +32,8 @@ links:
   email: ""
 work:
   title: 正在进行
+  # 默认显示整段「正在进行」。设为 true 时首页不输出 #work（三卡与插画都不出现）；站点 theme_config.work.hidden 优先于主题默认。
+  hidden: false
   items:
     - date: "2026 · PRODUCT"
       title: SkillHub 研发负责人

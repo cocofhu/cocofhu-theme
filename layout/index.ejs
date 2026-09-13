@@ -440,15 +440,34 @@
           link: item.link || fallback.link || ''
         };
       }
+      // work.hidden: site theme_config 优先；兼容布尔与常见字符串真值；无法识别则显示。
+      function coerceWorkHidden(value) {
+        if (value === true || value === 1) return true;
+        if (value === false || value === 0) return false;
+        if (value == null) return null;
+        var s = String(value).trim().toLowerCase();
+        if (!s) return null;
+        if (s === 'true' || s === '1' || s === 'yes' || s === 'on' || s === 'y') return true;
+        if (s === 'false' || s === '0' || s === 'no' || s === 'off' || s === 'n') return false;
+        return null;
+      }
+      function resolveWorkHidden(siteWorkCfg, themeWorkCfg) {
+        if (siteWorkCfg && Object.prototype.hasOwnProperty.call(siteWorkCfg, 'hidden')) {
+          return coerceWorkHidden(siteWorkCfg.hidden) === true;
+        }
+        return coerceWorkHidden(themeWorkCfg && themeWorkCfg.hidden) === true;
+      }
       var themeWork = theme.work || {};
       var siteWork = (config.theme_config && config.theme_config.work) || {};
+      var workHidden = resolveWorkHidden(siteWork, themeWork);
       var themeWorkItems = Array.isArray(themeWork.items) ? themeWork.items : [];
       var siteWorkItems = Array.isArray(siteWork.items) && siteWork.items.length ? siteWork.items : themeWorkItems;
-      var workItems = [0, 1, 2].map(function(i) {
+      var workItems = workHidden ? [] : [0, 1, 2].map(function(i) {
         return mergeWorkItem(siteWorkItems[i], themeWorkItems[i]);
       });
       var workTitle = siteWork.title || themeWork.title || '正在进行';
     %>
+    <% if (!workHidden) { %>
     <section class="band band--work" id="work">
       <p class="band-kicker reveal"><svg class="icon" aria-hidden="true"><use href="#i-layout"/></svg>focusing</p>
       <div class="band-head reveal" style="--d:60ms">
@@ -712,6 +731,7 @@
         </li>
       </ul>
     </section>
+    <% } %>
 
     <%
       function postSummary(post) {
